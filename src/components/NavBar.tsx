@@ -22,9 +22,13 @@ export default class NavBar extends Component {
                 </div>
                 <Routes>
                     <Route path="/" element={<HomePage />} />
-                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/login" element={<LoginPage onUserLogin={(user) => this.loggedIn(user)} />} />
                 </Routes>
             </BrowserRouter>
         );
+    }
+
+    private loggedIn(user: any): void {
+        console.log("user logged in");
     }
 }

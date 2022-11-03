@@ -1,9 +1,20 @@
 import { Component, ReactNode } from "react";
+import GoogleLoginButton from "../components/buttons/GoogleLoginButton";
+import "../styles/LoginPage.css";
 
-export default class LoginPage extends Component {
+interface Props {
+    onUserLogin(user: any): void;
+}
+
+export default class LoginPage extends Component<Props> {
     public render(): ReactNode {
         return (
-            <div>Login Page</div>
+            <div className="centre">
+                <div className="login-title">Log In</div>
+                <div className="login-container">
+                    <GoogleLoginButton onUserLogin={this.props.onUserLogin} />
+                </div>
+            </div>
         );
     }
 }

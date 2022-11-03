@@ -1,0 +1,34 @@
+.centre {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.login-title {
+    font-size: 24px;
+}
+
+.login-container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 25px;
+}
+
+.login-button {
+    display: flex;
+    align-items: center;
+    border: 1px solid #666666;
+    border-radius: 5px;
+    background-color: #F7F7F7;
+    padding: 10px 5px;
+    margin-bottom: 4px;
+}
+
+.login-button img {
+    width: 24px;
+}
+
+.login-text {
+    padding-left: 10px;
+}
