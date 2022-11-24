@@ -1,8 +1,10 @@
+import axios from "axios";
 import { Component, ReactNode } from "react";
 import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 import ReservationsPage from "../pages/ReservationsPage";
+import AccountService from "../services/AccountService";
 import "../styles/NavBar.css";
 
 export default class NavBar extends Component {
@@ -26,15 +28,16 @@ export default class NavBar extends Component {
                 </div>
                 <Routes>
                     <Route path="/" element={<HomePage />} />
-                    <Route path="/login" element={<LoginPage onUserLogin={(user) => this.loggedIn(user)} />} />
+                    <Route path="/login" element={<LoginPage onUserLogin={(user, accountService) => this.loggedIn(user, accountService)} />} />
                     <Route path="/reservations" element={<ReservationsPage />} />
                 </Routes>
             </BrowserRouter>
         );
     }
 
-    private loggedIn(user: any): void {
-        console.log("user logged in");
-        console.log(user);
+    private loggedIn(user: any, accountService: AccountService): void {
+        axios.defaults.params = {
+            token: accountService.getCredential()
+        };
     }
 }
