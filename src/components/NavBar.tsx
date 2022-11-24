@@ -4,6 +4,7 @@ import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 import ReservationsPage from "../pages/ReservationsPage";
+import TariffCreate from "../pages/Tariff/create/TariffCreate";
 import AccountService from "../services/AccountService";
 import "../styles/NavBar.css";
 
@@ -30,6 +31,7 @@ export default class NavBar extends Component {
                     <Route path="/" element={<HomePage />} />
                     <Route path="/login" element={<LoginPage onUserLogin={(user, accountService) => this.loggedIn(user, accountService)} />} />
                     <Route path="/reservations" element={<ReservationsPage />} />
+                    <Route path="/tariff/create" element={<TariffCreate/>}/>
                 </Routes>
             </BrowserRouter>
         );
