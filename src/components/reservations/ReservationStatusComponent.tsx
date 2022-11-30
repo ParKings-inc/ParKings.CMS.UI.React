@@ -8,7 +8,10 @@ interface Props {
 export default class ReservationStatusComponent extends Component<Props> {
     public render(): ReactNode {
         return (
-            <div className="reservation-status-bullet" style={{background: "orange"}}></div>
+            <>
+                <div>{this.props.status}</div>
+                <div className="reservation-status-bullet" style={{ background: "orange" }}></div>
+            </>
         );
     }
 }

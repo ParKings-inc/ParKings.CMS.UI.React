@@ -1,6 +1,7 @@
 import { Component, ReactNode } from "react";
 import Reservation from "../../reservations/Reservation";
 import ReservationStatusComponent from "./ReservationStatusComponent";
+import ReservationsService from "../../services/ReservationsService";
 import "../../styles/components/reservations/ReservationComponent.css";
 
 interface Props {
@@ -18,11 +19,15 @@ export default class ReservationComponent extends Component<Props> {
                 <div className="reservation-status-container">
                     <ReservationStatusComponent status={this.props.reservation.status} />
                     <div className="reservation-button-container">
-                        <button>Accept</button>
+                        <button onClick={async () => await this.accept()}>Accept</button>
                         <button>Deny</button>
                     </div>
                 </div>
             </div>
         );
+    }
+
+    private async accept(): Promise<void> {
+        await ReservationsService.updateStatus(this.props.reservation.id, "accepted");
     }
 }
