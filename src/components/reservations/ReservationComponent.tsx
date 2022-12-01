@@ -2,6 +2,7 @@ import { Component, ReactNode } from "react";
 import Reservation from "../../reservations/Reservation";
 import ReservationStatusComponent from "./ReservationStatusComponent";
 import ReservationsService from "../../services/ReservationsService";
+import ReservationStatus from "../../reservations/ReservationStatus";
 import "../../styles/components/reservations/ReservationComponent.css";
 
 interface Props {
@@ -28,6 +29,6 @@ export default class ReservationComponent extends Component<Props> {
     }
 
     private async accept(): Promise<void> {
-        await ReservationsService.updateStatus(this.props.reservation.id, "accepted");
+        await ReservationsService.updateStatus(this.props.reservation.id, ReservationStatus.ACCEPTED);
     }
 }

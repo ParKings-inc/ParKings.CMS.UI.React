@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
-import Reservation from '../reservations/Reservation';
 import urljoin from 'url-join';
+import Reservation from '../reservations/Reservation';
+import ReservationStatus from '../reservations/ReservationStatus';
 import Data from '../App.json';
 
 export default class ReservationsService {
@@ -15,8 +16,8 @@ export default class ReservationsService {
         return [];
     }
 
-    public static async updateStatus(id: number, status: string): Promise<void> {
-        let path: string = urljoin("Reservations/UpdateStatus", id.toString(), status);
+    public static async updateStatus(id: number, status: ReservationStatus): Promise<void> {
+        let path: string = urljoin("Reservations/UpdateStatus", id.toString(), status.toString());
         let url: URL = new URL(path, Data.serverAddress);
         await axios.put(url.toString());
     }
