@@ -1,18 +1,71 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Scheduler } from "@aldabil/react-scheduler";
 import CustomEditor from "../Scheduler/CustomEditor";
 
 const TariffTableComponent = () => {
+  const [events, setEvents] = useState([]);
+  const [refreshPage, setRefresh] = useState(false);
+  useEffect(() => {
+    console.log(events);
+  }, [events]);
 
-  function onConfirm(e){
-    console.log(e)
+  useEffect(() => {
+    if (refreshPage === true) {
+      setRefresh(false);
+      console.log("refresh");
+    }
+  }, [refreshPage]);
+
+  function addEvent(e, action) {
+    console.log(e);
+
+    setEvents((events) => {
+      let newEvents = events;
+      if (!action) {
+        newEvents.push(e);
+      } else {
+        newEvents.forEach((element, i) => {
+          if (element.id === e.id) {
+            console.log("found event");
+            newEvents[i] = e;
+          }
+        });
+      }
+      setRefresh(true);
+      return newEvents;
+    });
+  }
+
+  function deleteEvent(id) {
+    console.log(id);
+    setEvents((events) => {
+      let newEvents = events;
+      console.log(newEvents);
+      newEvents.forEach((element, i) => {
+        if (element.event_id === id) {
+          console.log(id);
+          newEvents.splice(i, 1);
+          console.log(newEvents);
+        }
+      });
+      setRefresh(true);
+      return newEvents;
+    });
   }
 
   return (
     <>
       <Scheduler
         view="week"
-        customEditor={(scheduler) => <CustomEditor scheduler={scheduler} />}
+        onDelete={(e) => {
+          deleteEvent(e);
+        }}
+        onConfirm={(e) => {
+          console.log(e);
+        }}
+        customEditor={(scheduler) => (
+          <CustomEditor eventSetter={addEvent} scheduler={scheduler} />
+        )}
         week={{
           weekDays: [0, 1, 2, 3, 4, 5, 6],
           weekStartOn: 1,
@@ -21,15 +74,7 @@ const TariffTableComponent = () => {
           step: 60,
           navigation: true,
         }}
-        fields={[
-          {
-            name: "Description",
-            type: "input",
-            default: "Default Value...",
-            config: { label: "Details", multiline: false, rows: 4 },
-          },
-        ]}
-        events={[]}
+        events={Array.isArray(events) ? (events.length > 0 ? events : []) : []}
       />
     </>
   );
