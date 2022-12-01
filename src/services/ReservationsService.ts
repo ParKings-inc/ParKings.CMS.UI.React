@@ -16,9 +16,15 @@ export default class ReservationsService {
         return [];
     }
 
-    public static async updateStatus(id: number, status: ReservationStatus): Promise<void> {
+    public static async updateStatus(id: number, status: ReservationStatus): Promise<boolean> {
         let path: string = urljoin("Reservations/UpdateStatus", id.toString(), status.toString());
         let url: URL = new URL(path, Data.serverAddress);
-        await axios.put(url.toString());
+        try {
+            let result: AxiosResponse = await axios.put(url.toString());
+            return result.status == 200;
+        } catch (e) {
+            console.error(e);
+            return false;
+        }
     }
 }

@@ -29,10 +29,16 @@ export default class ReservationComponent extends Component<Props> {
     }
 
     private async accept(): Promise<void> {
-        await ReservationsService.updateStatus(this.props.reservation.id, ReservationStatus.ACCEPTED);
+        if (await ReservationsService.updateStatus(this.props.reservation.id, ReservationStatus.ACCEPTED)) {
+            this.props.reservation.status = ReservationStatus.ACCEPTED;
+            this.setState({});
+        }
     }
 
     private async deny(): Promise<void> {
-        await ReservationsService.updateStatus(this.props.reservation.id, ReservationStatus.DENIED);
+        if (await ReservationsService.updateStatus(this.props.reservation.id, ReservationStatus.DENIED)) {
+            this.props.reservation.status = ReservationStatus.DENIED;
+            this.setState({});
+        }
     }
 }
