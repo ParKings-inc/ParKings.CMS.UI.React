@@ -21,7 +21,7 @@ export default class ReservationComponent extends Component<Props> {
                     <ReservationStatusComponent status={this.props.reservation.status} />
                     <div className="reservation-button-container">
                         <button onClick={async () => await this.accept()}>Accept</button>
-                        <button>Deny</button>
+                        <button onClick={async () => await this.deny()}>Deny</button>
                     </div>
                 </div>
             </div>
@@ -30,5 +30,9 @@ export default class ReservationComponent extends Component<Props> {
 
     private async accept(): Promise<void> {
         await ReservationsService.updateStatus(this.props.reservation.id, ReservationStatus.ACCEPTED);
+    }
+
+    private async deny(): Promise<void> {
+        await ReservationsService.updateStatus(this.props.reservation.id, ReservationStatus.DENIED);
     }
 }
