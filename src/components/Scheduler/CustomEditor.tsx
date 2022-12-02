@@ -19,7 +19,7 @@ import {
 } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { start } from "repl";
+
 
 interface CustomEditorProps {
   scheduler: SchedulerHelpers;
@@ -73,7 +73,6 @@ const CustomEditor = ({ scheduler, eventSetter }: CustomEditorProps) => {
           event_id: Math.random(),
           repetitive: state.repetitive,
           title: state.price,
-
           start: !state.repetitive
             ? new Date(dayjs(state.startDateTime).format("YYYY/MM/DD HH:mm"))
             : new Date(

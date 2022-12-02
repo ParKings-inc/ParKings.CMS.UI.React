@@ -1,70 +1,113 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Scheduler } from "@aldabil/react-scheduler";
 import CustomEditor from "../Scheduler/CustomEditor";
 import PricingService from "../../services/PricingService";
 
 const TariffTableComponent = (props) => {
   const [events, setEvents] = useState([]);
-  const [refreshPage, setRefresh] = useState(false);
+  const [displayEvents, setDisplayEvents] = useState([]);
+  let selected = useRef({});
+  let EventsRef = useRef({});
+  useEffect(() => {
+    fetchEvents();
+  }, []);
 
   useEffect(() => {
-    if (refreshPage === true) {
-      setRefresh(false);
-      console.log("refresh");
+  }, [displayEvents]);
+
+  useEffect(() => {
+    console.log(props.garageId)
+    if (events !== undefined && props.garageId !== undefined) {
+      let dEvents = events.filter((event) => {
+        return event.garageID === props.garageId.id;
+      })
+
+      dEvents.forEach(event => {
+        if (event.repetitive === true) {
+          console.log("recurring")
+          for (let index = 1; index < 52; index++) {
+            let newEvent = {
+              event_id: event.event_id,
+              title: event.title,
+              start: new Date(new Date(event.start).setDate(new Date(event.start).getDate() + (index * 7))),
+              end: new Date(new Date(event.end).setDate(new Date(event.end).getDate() + (index * 7))),
+              allDay: false,
+              repetitive: true,
+              color: "orange"
+            }
+            dEvents.push(newEvent);
+          }
+        }
+      });
+
+      selected.current = props.garageId;
+
+      setDisplayEvents(dEvents);
     }
-  }, [refreshPage]);
-
-  useEffect(() => {
-    PricingService.getTariff();
-  }, [props.garageId]);
+  }, [props.garageId, events]);
 
   function addEvent(e, action) {
-    console.log(e);
-
-    setEvents((events) => {
-      let newEvents = events;
-      if (!action) {
-        newEvents.push(e);
-        PricingService.createTariff(props.garageId, e);
+    if (!action) {
+      PricingService.createTariff(selected.current.id, e).then(() => {
+        fetchEvents();
+      });
+    } else {
+      console.log(action);
+      if (!action.repetitive) {
+        PricingService.putTariff(action.event_id, e, selected.current.id).then(() => {
+          fetchEvents();
+        });
       } else {
-        newEvents.forEach((element, i) => {
-          if (element.id === e.id) {
-            console.log("found event");
-            newEvents[i] = e;
-          }
+        console.log(EventsRef.current)
+        let editableEvent = EventsRef.current.find(event => {
+          console.log(event.event_id)
+          return event.event_id === action.event_id;
+        })
+
+        editableEvent.start = new Date(new Date(editableEvent.start).setHours(new Date(e.start).getHours()));
+        editableEvent.end = new Date(new Date(editableEvent.start).setHours(new Date(e.end).getHours()));
+        PricingService.putTariff(action.event_id, editableEvent, selected.current.id).then(() => {
+          fetchEvents();
         });
       }
-      setRefresh(true);
-      return newEvents;
-    });
+
+    }
   }
 
   function deleteEvent(id) {
-    console.log(id);
-    setEvents((events) => {
-      let newEvents = events;
-      console.log(newEvents);
-      newEvents.forEach((element, i) => {
-        if (element.event_id === id) {
-          console.log(id);
-          newEvents.splice(i, 1);
-          console.log(newEvents);
+    PricingService.deleteTariff(id).then((data) => {
+      fetchEvents();
+    });
+  }
+
+  function fetchEvents() {
+    PricingService.getTariff().then((data) => {
+      let newEvents = [];
+      data.forEach(price => {
+
+        let newEvent = {
+          event_id: price.id,
+          title: price.price,
+          start: new Date(price.startingTime),
+          end: new Date(price.endingTime),
+          repetitive: price.recurring,
+          garageID: price.garageID,
+          color: price.recurring ? "orange" : "#2196f3"
         }
+        newEvents.push(newEvent);
       });
-      setRefresh(true);
-      return newEvents;
+      EventsRef.current = newEvents;
+      setEvents(newEvents);
     });
   }
 
   return (
     <>
       <Scheduler
+        draggable={false}
         view="week"
         onDelete={(e) => {
           deleteEvent(e);
-        }}
-        onConfirm={(e) => {
-          console.log(e);
         }}
         customEditor={(scheduler) => (
           <CustomEditor eventSetter={addEvent} scheduler={scheduler} />
@@ -72,12 +115,13 @@ const TariffTableComponent = (props) => {
         week={{
           weekDays: [0, 1, 2, 3, 4, 5, 6],
           weekStartOn: 1,
-          startHour: 9,
-          endHour: 17,
+          startHour: selected.current === {} ? 9 : new Date(selected.current.openingTime).getHours(),
+          endHour: selected.current === {} ? 17 : new Date(selected.current.closingTime).getHours(),
           step: 60,
           navigation: true,
         }}
-        events={Array.isArray(events) ? (events.length > 0 ? events : []) : []}
+
+        events={displayEvents}
       />
     </>
   );

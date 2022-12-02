@@ -11,8 +11,12 @@ const TariffCreate = () => {
       .then((data) => {
         setGarages(data);
       })
-      .catch((error) => {});
+      .catch((error) => { });
   }, []);
+
+  useEffect(() => {
+
+  }, [garageid]);
 
   return (
     <div style={{ display: "flex", flexDirection: "row" }}>
@@ -28,16 +32,24 @@ const TariffCreate = () => {
           {Array.isArray(garages)
             ? garages.length > 0
               ? garages.map((garage) => {
-                  return <MenuItem value={garage.id}>{garage.name}</MenuItem>;
-                })
+                return <MenuItem key={garage.id} value={garage.id}>{garage.name}</MenuItem>;
+              })
               : null
             : null}
         </Select>
+        <p><b>Default price:</b> € {garages.find((e) => {
+          return e.id === garageid
+        }) != undefined ? garages.find((e) => {
+          return e.id === garageid
+        }).normalPrice : null}
+        </p>
       </div>
       <div style={{ width: "85%" }}>
-        <TariffCreateForm garageId={garageid} />
+        <TariffCreateForm garageId={garages.find((e) => {
+          return e.id === garageid;
+        })} />
       </div>
-    </div>
+    </div >
   );
 };
 
