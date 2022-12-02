@@ -3,10 +3,10 @@ import TariffTableComponent from "./TariffTableComponent";
 
 
 
-const TariffCreateForm = () => {
+const TariffCreateForm = (props) => {
   return (
     <>
-     <TariffTableComponent/>
+      <TariffTableComponent garageId={props.garageId} />
     </>
   );
 };

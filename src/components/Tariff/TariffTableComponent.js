@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Scheduler } from "@aldabil/react-scheduler";
 import CustomEditor from "../Scheduler/CustomEditor";
+import PricingService from "../../services/PricingService";
 
-const TariffTableComponent = () => {
+const TariffTableComponent = (props) => {
   const [events, setEvents] = useState([]);
   const [refreshPage, setRefresh] = useState(false);
-  useEffect(() => {
-    console.log(events);
-  }, [events]);
 
   useEffect(() => {
     if (refreshPage === true) {
@@ -16,6 +14,10 @@ const TariffTableComponent = () => {
     }
   }, [refreshPage]);
 
+  useEffect(() => {
+    PricingService.getTariff();
+  }, [props.garageId]);
+
   function addEvent(e, action) {
     console.log(e);
 
@@ -23,6 +25,7 @@ const TariffTableComponent = () => {
       let newEvents = events;
       if (!action) {
         newEvents.push(e);
+        PricingService.createTariff(props.garageId, e);
       } else {
         newEvents.forEach((element, i) => {
           if (element.id === e.id) {

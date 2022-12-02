@@ -72,7 +72,7 @@ const CustomEditor = ({ scheduler, eventSetter }: CustomEditorProps) => {
         res({
           event_id: Math.random(),
           repetitive: state.repetitive,
-          title: "€" + state.price,
+          title: state.price,
 
           start: !state.repetitive
             ? new Date(dayjs(state.startDateTime).format("YYYY/MM/DD HH:mm"))
