@@ -1,8 +1,12 @@
 
 
 export default interface Reservation {
-    readonly id: number;
-    readonly arrivalTime: Date;
-    readonly departureTime: Date;
-    status: string;
+    readonly ReservationID: number;
+    readonly ArrivalTime: Date;
+    readonly DepartureTime: Date;
+    readonly GarageName: string;
+    readonly SpaceFloor: number;
+    readonly SpaceRow: number;
+    readonly SpaceID: number;
+    Status: string;
 }

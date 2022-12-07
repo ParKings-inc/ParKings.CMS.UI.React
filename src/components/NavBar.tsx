@@ -91,9 +91,7 @@ export default class NavBar extends Component<Props, State> {
     }
 
     private setDefaults(accountService: AccountService): void {
-        axios.defaults.params = {
-            token: accountService.getCredential()
-        };
+
     }
 
 }

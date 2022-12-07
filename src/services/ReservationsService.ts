@@ -6,8 +6,9 @@ import Data from '../App.json';
 export default class ReservationsService {
     public static async getReservations(): Promise<Reservation[]> {
         try {
-            let url: URL = new URL("Reservations/GetReservations", Data.serverAddress);
+            let url: URL = new URL("/api/Reservations/Admin/Reservation", Data.ConsumerAddress);
             let result: AxiosResponse<Reservation[]> = await axios.get(url.toString());
+            console.log(result.data)
             return result.data;
         } catch (e) {
             console.error(e);

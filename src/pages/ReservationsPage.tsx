@@ -24,8 +24,8 @@ export default class ReservationsPage extends Component<any, State> {
         }
 
         return (
-            <div>
-                <div>Reservations</div>
+            <div style={{ "textAlign": "center" }}>
+                <h1>Reservations</h1>
                 <div className="reservations-container">
                     {this.state != null && this.state.reservations}
                 </div>

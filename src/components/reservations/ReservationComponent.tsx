@@ -3,6 +3,7 @@ import Reservation from "../../reservations/Reservation";
 import ReservationStatusComponent from "./ReservationStatusComponent";
 import ReservationsService from "../../services/ReservationsService";
 import "../../styles/components/reservations/ReservationComponent.css";
+import { Button } from "@mui/material";
 
 interface Props {
     reservation: Reservation;
@@ -12,15 +13,19 @@ export default class ReservationComponent extends Component<Props> {
     public render(): ReactNode {
         return (
             <div className="reservation-container">
-                <div className="reservation-label-container">
-                    <div>Arrival: {this.props.reservation.arrivalTime.toString()}</div>
-                    <div>Departure: {this.props.reservation.departureTime.toString()}</div>
-                </div>
-                <div className="reservation-status-container">
-                    <ReservationStatusComponent status={this.props.reservation.status} />
-                    <div className="reservation-button-container">
-                        <button onClick={async () => await this.accept()}>Accept</button>
-                        <button onClick={async () => await this.deny()}>Deny</button>
+                <div className="reservation-child-container">
+                    <div className="reservation-label-container">
+                        <div><h3> {this.props.reservation.GarageName}</h3></div>
+                        <div><b>Space</b>: {this.props.reservation.SpaceFloor}-{this.props.reservation.SpaceID}-{this.props.reservation.SpaceRow}</div>
+                        <div><b>Arrival</b>: {this.props.reservation.ArrivalTime.toString()}</div>
+                        <div><b>Departure</b>: {this.props.reservation.DepartureTime.toString()}</div>
+                    </div>
+                    <div className="reservation-status-container">
+                        <ReservationStatusComponent status={this.props.reservation.Status} />
+                        <div className="reservation-button-container">
+                            <Button variant="contained" color="success" onClick={async () => await this.accept()}>Accept</Button>
+                            <Button variant="contained" color="error" onClick={async () => await this.deny()}>Deny</Button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -28,15 +33,17 @@ export default class ReservationComponent extends Component<Props> {
     }
 
     private async accept(): Promise<void> {
-        if (await ReservationsService.updateStatus(this.props.reservation.id, "Accepted")) {
-            this.props.reservation.status = "Accepted";
+        if (await ReservationsService.updateStatus(this.props.reservation.ReservationID
+            , "Accepted")) {
+            this.props.reservation.Status = "Accepted";
             this.setState({});
         }
     }
 
     private async deny(): Promise<void> {
-        if (await ReservationsService.updateStatus(this.props.reservation.id, "Denied")) {
-            this.props.reservation.status = "Denied";
+        if (await ReservationsService.updateStatus(this.props.reservation.ReservationID
+            , "Denied")) {
+            this.props.reservation.Status = "Denied";
             this.setState({});
         }
     }
