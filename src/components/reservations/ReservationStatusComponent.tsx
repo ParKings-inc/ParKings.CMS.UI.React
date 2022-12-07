@@ -11,7 +11,7 @@ export default class ReservationStatusComponent extends Component<Props> {
         return (
             <>
                 <div>{ReservationStatusComponent.getStatusDisplay(this.props.status)}</div>
-                <div className="reservation-status-bullet" style={{ background: "orange" }}></div>
+                <div className="reservation-status-bullet" style={{ background: ReservationStatusComponent.getStatusColour(this.props.status) }}></div>
             </>
         );
     }
@@ -26,6 +26,19 @@ export default class ReservationStatusComponent extends Component<Props> {
                 return "Denied";
             default:
                 return "Unknown";
+        }
+    }
+
+    private static getStatusColour(status: ReservationStatus): string {
+        switch (status) {
+            case ReservationStatus.PENDING:
+                return "orange";
+            case ReservationStatus.ACCEPTED:
+                return "yellowgreen";
+            case ReservationStatus.DENIED:
+                return "orangered";
+            default:
+                return "grey";
         }
     }
 }
