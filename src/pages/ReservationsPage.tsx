@@ -5,14 +5,14 @@ import ReservationsService from "../services/ReservationsService";
 import "../styles/pages/ReservationsPage.css";
 
 interface State {
-    reservations: ReactNode[];
+    reservations: ReactNode[] | null;
 }
 
 export default class ReservationsPage extends Component<any, State> {
     public constructor(props: any, state: State) {
         super(props);
         this.state = {
-            reservations: []
+            reservations: null
         };
     }
 
