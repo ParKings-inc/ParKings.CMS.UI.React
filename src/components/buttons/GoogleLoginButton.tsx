@@ -3,7 +3,7 @@ import { GoogleOAuthProvider, GoogleLogin, CredentialResponse } from "@react-oau
 import AccountService from "../../services/AccountService";
 
 interface Props {
-    onUserLogin(user: any): void;
+    onUserLogin(user: any, accountService: AccountService): void;
 }
 
 export default class GoogleLoginButton extends Component<Props> {
@@ -24,7 +24,7 @@ export default class GoogleLoginButton extends Component<Props> {
     private success(response: CredentialResponse): void {
         this.accountService.saveCredential(response.credential);
         let user: any = this.accountService.parseJwt(response.credential);
-        this.props.onUserLogin(user);
+        this.props.onUserLogin(user, this.accountService);
     }
 
     private fail(): void {

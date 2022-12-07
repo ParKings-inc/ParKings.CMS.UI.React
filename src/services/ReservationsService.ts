@@ -1,17 +1,16 @@
 import Data from '../App.json';
-import Axios, { AxiosResponse } from 'axios';
-import path from 'path';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
+import Reservation from '../reservations/Reservation';
 
 export default class ReservationsService {
-    public static async getReservations(): Promise<void> {
+    public static async getReservations(): Promise<Reservation[]> {
         try {
-            let url: string = new URL("Reservations", Data.serverAddress).toString();
-            console.log(url);
-            let x: AxiosResponse = await axios.get(url);
-            console.log(x);
+            let url: URL = new URL("Reservations", Data.serverAddress);
+            let result: AxiosResponse<Reservation[]> = await axios.get(url.toString());
+            return result.data;
         } catch (e) {
             console.error(e);
         }
+        return [];
     }
 }
