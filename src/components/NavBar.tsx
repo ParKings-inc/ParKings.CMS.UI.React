@@ -7,7 +7,20 @@ import ReservationsPage from "../pages/ReservationsPage";
 import AccountService from "../services/AccountService";
 import "../styles/NavBar.css";
 
-export default class NavBar extends Component {
+interface Props {}
+
+interface State {
+    loggedIn: boolean;
+}
+
+export default class NavBar extends Component<Props, State> {
+    public constructor(props: Props) {
+        super(props);
+        this.state = {
+            loggedIn: false
+        };
+    }
+
     public render(): ReactNode {
         return (
             <BrowserRouter>
@@ -17,12 +30,7 @@ export default class NavBar extends Component {
                             <li>
                                 <Link to="/">Home</Link>
                             </li>
-                            <li className="">
-                                <Link to="/reservations">Reservations</Link>
-                            </li>
-                            <li className="router-space">
-                                <Link to="/login">Log In</Link>
-                            </li>
+                            {this.state.loggedIn ? this.getLoggedInLinks() : this.getLoggedOutLinks()}
                         </ul>
                     </nav>
                 </div>
@@ -35,9 +43,35 @@ export default class NavBar extends Component {
         );
     }
 
+    private getLoggedInLinks(): ReactNode {
+        return (
+            <>
+                <li className="">
+                    <Link to="/reservations">Reservations</Link>
+                </li>
+                <li className="router-space">
+                    <Link to="/login">Log out</Link>
+                </li>
+            </>
+        )
+    }
+
+    private getLoggedOutLinks(): ReactNode {
+        return (
+            <>
+                <li className="router-space">
+                    <Link to="/login">Log in</Link>
+                </li>
+            </>
+        )
+    }
+
     private loggedIn(user: any, accountService: AccountService): void {
         axios.defaults.params = {
             token: accountService.getCredential()
         };
+        this.setState({
+            loggedIn: true
+        });
     }
 }
