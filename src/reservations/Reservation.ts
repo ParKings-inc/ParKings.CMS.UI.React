@@ -1,8 +1,8 @@
-import ReservationStatus from "./ReservationStatus";
+
 
 export default interface Reservation {
     readonly id: number;
     readonly arrivalTime: Date;
     readonly departureTime: Date;
-    status: ReservationStatus;
+    status: string;
 }

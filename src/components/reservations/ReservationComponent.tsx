@@ -2,7 +2,6 @@ import { Component, ReactNode } from "react";
 import Reservation from "../../reservations/Reservation";
 import ReservationStatusComponent from "./ReservationStatusComponent";
 import ReservationsService from "../../services/ReservationsService";
-import ReservationStatus from "../../reservations/ReservationStatus";
 import "../../styles/components/reservations/ReservationComponent.css";
 
 interface Props {
@@ -29,15 +28,15 @@ export default class ReservationComponent extends Component<Props> {
     }
 
     private async accept(): Promise<void> {
-        if (await ReservationsService.updateStatus(this.props.reservation.id, ReservationStatus.ACCEPTED)) {
-            this.props.reservation.status = ReservationStatus.ACCEPTED;
+        if (await ReservationsService.updateStatus(this.props.reservation.id, "Accepted")) {
+            this.props.reservation.status = "Accepted";
             this.setState({});
         }
     }
 
     private async deny(): Promise<void> {
-        if (await ReservationsService.updateStatus(this.props.reservation.id, ReservationStatus.DENIED)) {
-            this.props.reservation.status = ReservationStatus.DENIED;
+        if (await ReservationsService.updateStatus(this.props.reservation.id, "Denied")) {
+            this.props.reservation.status = "Denied";
             this.setState({});
         }
     }

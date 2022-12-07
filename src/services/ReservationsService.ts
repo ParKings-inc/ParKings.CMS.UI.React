@@ -1,7 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import urljoin from 'url-join';
 import Reservation from '../reservations/Reservation';
-import ReservationStatus from '../reservations/ReservationStatus';
 import Data from '../App.json';
 
 export default class ReservationsService {
@@ -16,7 +15,7 @@ export default class ReservationsService {
         return [];
     }
 
-    public static async updateStatus(id: number, status: ReservationStatus): Promise<boolean> {
+    public static async updateStatus(id: number, status: string): Promise<boolean> {
         let path: string = urljoin("Reservations/UpdateStatus", id.toString(), status.toString());
         let url: URL = new URL(path, Data.serverAddress);
         try {
