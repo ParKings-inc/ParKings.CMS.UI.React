@@ -1,0 +1,25 @@
+.reservation-container {
+    display: flex;
+    margin-bottom: 10px;
+    padding: 0px 2px;
+    border: 1px solid black;
+}
+
+.reservation-label-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.reservation-status-container {
+    display: flex;
+    margin-left: auto;
+    align-items: center;
+}
+
+.reservation-button-container {
+    display: flex;
+}
+
+.reservation-button-container button {
+    margin: 0 2px;
+}
