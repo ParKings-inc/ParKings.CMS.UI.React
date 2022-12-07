@@ -9,11 +9,24 @@ interface State {
 }
 
 export default class ReservationsPage extends Component<any, State> {
+    public constructor(props: any, state: State) {
+        super(props);
+        this.state = {
+            reservations: []
+        };
+        this.getReservations();
+    }
+
     public render(): ReactNode {
+        if (this.state.reservations == null) {
+            return (
+                <div>Loading reservations...</div>
+            );
+        }
+
         return (
             <div>
                 <div>Reservations</div>
-                <button onClick={async () => await this.getReservations()}>Get Reservations</button>
                 <div className="reservations-container">
                     {this.state != null && this.state.reservations}
                 </div>
