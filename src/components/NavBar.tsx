@@ -19,6 +19,7 @@ export default class NavBar extends Component<Props, State> {
         this.state = {
             loggedIn: false
         };
+        this.initialise(new AccountService());
     }
 
     public render(): ReactNode {
@@ -66,12 +67,26 @@ export default class NavBar extends Component<Props, State> {
         )
     }
 
-    private loggedIn(user: any, accountService: AccountService): void {
-        axios.defaults.params = {
-            token: accountService.getCredential()
+    private initialise(accountService: AccountService): void {
+        if (accountService.getCredential() == null) {
+            return;
+        }
+        this.setDefaults(accountService);
+        this.state = {
+            loggedIn: true
         };
+    }
+
+    private loggedIn(user: any, accountService: AccountService): void {
+        this.setDefaults(accountService);
         this.setState({
             loggedIn: true
         });
+    }
+
+    private setDefaults(accountService: AccountService): void {
+        axios.defaults.params = {
+            token: accountService.getCredential()
+        };
     }
 }

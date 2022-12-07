@@ -14,7 +14,6 @@ export default class ReservationsPage extends Component<any, State> {
         this.state = {
             reservations: []
         };
-        this.getReservations();
     }
 
     public render(): ReactNode {
@@ -32,6 +31,10 @@ export default class ReservationsPage extends Component<any, State> {
                 </div>
             </div>
         );
+    }
+
+    public async componentDidMount(): Promise<void> {
+        await this.getReservations();
     }
 
     private async getReservations(): Promise<void> {
