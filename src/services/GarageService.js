@@ -23,6 +23,16 @@ export async function getGarageByID(id) {
   }
 }
 
+export async function putGarage(data) {
+  try {
+    const response = await axios.put(`${api}/Garages/${data.id}`, data);
+    console.log("response", response);
+    return response.data;
+  } catch (error) {
+    return null;
+  }
+}
+
 export async function getGarage(data) {
   try {
     const response = await axios.get(api + "/Garages", { garage: data });
