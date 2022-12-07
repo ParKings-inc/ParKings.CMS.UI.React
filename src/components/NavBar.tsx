@@ -9,7 +9,7 @@ import AccountService from "../services/AccountService";
 import "../styles/NavBar.css";
 
 
-interface Props {}
+interface Props { }
 
 interface State {
     loggedIn: boolean;
@@ -41,7 +41,7 @@ export default class NavBar extends Component<Props, State> {
                     <Route path="/" element={<HomePage />} />
                     <Route path="/login" element={<LoginPage onUserLogin={(user, accountService) => this.loggedIn(user, accountService)} />} />
                     <Route path="/reservations" element={<ReservationsPage />} />
-                   <Route path="/tariff" element={<TariffCreate />} />
+                    <Route path="/tariff" element={<TariffCreate />} />
                 </Routes>
             </BrowserRouter>
         );
@@ -52,6 +52,9 @@ export default class NavBar extends Component<Props, State> {
             <>
                 <li className="">
                     <Link to="/reservations">Reservations</Link>
+                </li>
+                <li className="">
+                    <Link to="/tariff">Tariff</Link>
                 </li>
                 <li className="router-space">
                     <Link to="/login">Log out</Link>
