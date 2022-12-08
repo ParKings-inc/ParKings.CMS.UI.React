@@ -16,6 +16,8 @@ interface State {
 }
 
 export default class NavBar extends Component<Props, State> {
+    private readonly accountService: AccountService = new AccountService();
+
     public constructor(props: Props) {
         super(props);
         this.state = {
@@ -57,7 +59,7 @@ export default class NavBar extends Component<Props, State> {
                     <Link to="/tariff">Tariff</Link>
                 </li>
                 <li className="router-space">
-                    <Link to="/login">Log out</Link>
+                    <Link to="/" onClick={() => this.logOut()}>Log out</Link>
                 </li>
             </>
         )
@@ -87,6 +89,13 @@ export default class NavBar extends Component<Props, State> {
         this.setDefaults(accountService);
         this.setState({
             loggedIn: true
+        });
+    }
+
+    private logOut(): void {
+        this.accountService.deleteCredential();
+        this.setState({
+            loggedIn: false
         });
     }
 
