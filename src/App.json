@@ -1,0 +1,4 @@
+{
+    "serverAddress": "https://localhost:7004/api/",
+    "ConsumerAddress":"https://localhost:7205/api"
+}
