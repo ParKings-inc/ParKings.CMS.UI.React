@@ -1,13 +1,13 @@
 import axios from "axios";
 import { Component, ReactNode } from "react";
 import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
+import GarageOverviewPage from "../pages/GarageOverviewPage";
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 import ReservationsPage from "../pages/ReservationsPage";
 import TariffCreate from "../pages/Tariff/create/TariffCreate";
 import AccountService from "../services/AccountService";
 import "../styles/NavBar.css";
-
 
 interface Props { }
 
@@ -26,6 +26,7 @@ export default class NavBar extends Component<Props, State> {
         this.initialise(new AccountService());
     }
 
+
     public render(): ReactNode {
         return (
             <BrowserRouter>
@@ -35,19 +36,32 @@ export default class NavBar extends Component<Props, State> {
                             <li>
                                 <Link to="/">Home</Link>
                             </li>
-                            {this.state.loggedIn ? this.getLoggedInLinks() : this.getLoggedOutLinks()}
+                            {this.state.loggedIn
+                                ? this.getLoggedInLinks()
+                                : this.getLoggedOutLinks()}
                         </ul>
                     </nav>
                 </div>
                 <Routes>
                     <Route path="/" element={<HomePage />} />
-                    <Route path="/login" element={<LoginPage onUserLogin={(user, accountService) => this.loggedIn(user, accountService)} />} />
+                    <Route
+                        path="/login"
+                        element={
+                            <LoginPage
+                                onUserLogin={(user, accountService) =>
+                                    this.loggedIn(user, accountService)
+                                }
+                            />
+                        }
+                    />
                     <Route path="/reservations" element={<ReservationsPage />} />
                     <Route path="/tariff" element={<TariffCreate />} />
+                    <Route path="/garageoverview" element={<GarageOverviewPage />} />
                 </Routes>
             </BrowserRouter>
         );
     }
+
 
     private getLoggedInLinks(): ReactNode {
         return (
@@ -57,6 +71,9 @@ export default class NavBar extends Component<Props, State> {
                 </li>
                 <li className="">
                     <Link to="/tariff">Tariff</Link>
+                </li>
+                <li className="">
+                    <Link to="/garageoverview">Garage Overview</Link>
                 </li>
                 <li className="router-space">
                     <Link to="/" onClick={() => this.logOut()}>Log out</Link>
@@ -72,7 +89,7 @@ export default class NavBar extends Component<Props, State> {
                     <Link to="/login">Log in</Link>
                 </li>
             </>
-        )
+        );
     }
 
     private initialise(accountService: AccountService): void {
@@ -81,14 +98,15 @@ export default class NavBar extends Component<Props, State> {
         }
         this.setDefaults(accountService);
         this.state = {
-            loggedIn: true
+            loggedIn: true,
         };
     }
+
 
     private loggedIn(user: any, accountService: AccountService): void {
         this.setDefaults(accountService);
         this.setState({
-            loggedIn: true
+            loggedIn: true,
         });
     }
 
@@ -98,9 +116,6 @@ export default class NavBar extends Component<Props, State> {
             loggedIn: false
         });
     }
-
-    private setDefaults(accountService: AccountService): void {
-
-    }
-
+    
+    private setDefaults(accountService: AccountService): void { }
 }
