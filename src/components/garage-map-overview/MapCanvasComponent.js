@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { getAllSpacesByGarage } from "../../services/SpaceService";
+import { HubConnectionBuilder } from "@microsoft/signalr";
 
 const MapCanvasComponent = (props) => {
   const [spaces, setSpaces] = useState([]);
@@ -7,6 +8,10 @@ const MapCanvasComponent = (props) => {
   const [mouseScroll, setMouseScroll] = useState(1);
   const [mouseDownPos, setMouseDownPos] = useState({ x: 0, y: 0 });
   const [translationPos, setTranslationPos] = useState({ x: 1, y: 1 });
+  const latestPlaces = useRef(null);
+
+  latestPlaces.current = spaces;
+  const isInitialMount = useRef(true);
 
   useEffect(() => {
     getAllSpacesByGarage(props.garageId).then((e) => {
@@ -20,10 +25,63 @@ const MapCanvasComponent = (props) => {
   useEffect(() => {
     let canvas = document.getElementById("excanvas");
     let ctx = canvas.getContext("2d");
+    console.log(spaces)
     drawParkingSpaces(canvas, ctx, spaces);
-  }, [mouseScroll, translationPos, props.floorSelection]);
+  }, [mouseScroll, translationPos, props.floorSelection,spaces]);
 
-  function drawParkingSpaces(canvas, ctx, spaceParam) {
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return
+    }
+
+    const connection = new HubConnectionBuilder()
+        .withUrl('https://localhost:7205/hubs/spaces')
+        .withAutomaticReconnect()
+        .build();
+
+    connection.start()
+        .then(result => {
+            console.log('Connected!');
+
+            connection.on('ReceiveAvailableSpaces', message => {
+
+
+              console.log('Received spaces', message);
+              let returnArray = [];
+              message.forEach(element => {
+                returnArray.push({
+                  id:element.ID,
+                  garageID: element.GarageID,
+                  floor: element.Floor,
+                  row: element.Row,
+                  spot: element.Spot,
+                  typeId: element.TypeId,
+                  statusId: element.StatusId
+                })
+              });
+
+            
+
+              setSpaces(returnArray);
+            });
+        })
+        .catch(e => console.log('Connection failed: ', e));
+    isInitialMount.current = true;
+  }, []);
+
+  function drawParkingSpaces(canvas, ctx, spacesParam) {
+    if(spacesParam == null || spacesParam == undefined || !Array.isArray(spacesParam)){
+      return
+    }
+
+    let spaceParam = [];
+    spacesParam.forEach(space => {
+      if(!Array.isArray(space)){
+        spaceParam.push(space)
+      }
+    });
+
     ctx.beginPath();
     ctx.clearRect(0, 0, 1920, 1080);
 
@@ -68,6 +126,7 @@ const MapCanvasComponent = (props) => {
 
     for (let index = 0; index < uniqueRows.length; index++) {}
     needSpaces.forEach((space) => {
+      console.log(space)
       ctx.beginPath();
       ctx.save();
       ctx.translate((1920 / 2) * mouseScroll, (1080 / 2) * mouseScroll);
