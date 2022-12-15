@@ -1,13 +1,19 @@
 export default class AccountService {
+    private static readonly USER_KEY: string = "userCredential";
+
     public saveCredential(credential?: string): void {
         if (credential == null) {
             return;
         }
-        sessionStorage.setItem("userCredential", credential);
+        sessionStorage.setItem(AccountService.USER_KEY, credential);
+    }
+
+    public deleteCredential(): void {
+        sessionStorage.removeItem(AccountService.USER_KEY);
     }
 
     public getCredential(): string | null {
-        return sessionStorage.getItem("userCredential");
+        return sessionStorage.getItem(AccountService.USER_KEY);
     }
 
     public parseJwt(credential?: string): any {

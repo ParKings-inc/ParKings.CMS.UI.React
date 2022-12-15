@@ -16,13 +16,17 @@ interface State {
 }
 
 export default class NavBar extends Component<Props, State> {
-  public constructor(props: Props) {
-    super(props);
-    this.state = {
-      loggedIn: false,
-    };
-    this.initialise(new AccountService());
-  }
+
+    private readonly accountService: AccountService = new AccountService();
+
+    public constructor(props: Props) {
+        super(props);
+        this.state = {
+            loggedIn: false
+        };
+        this.initialise(new AccountService());
+    }
+
 
   public render(): ReactNode {
     return (
@@ -59,18 +63,25 @@ export default class NavBar extends Component<Props, State> {
     );
   }
 
-  private getLoggedInLinks(): ReactNode {
-    return (
-      <>
-        <li className="">
-          <Link to="/reservations">Reservations</Link>
-        </li>
-        <li className="">
-          <Link to="/tariff">Tariff</Link>
-        </li>
-        <li className="">
+
+    private getLoggedInLinks(): ReactNode {
+        return (
+            <>
+                <li className="">
+                    <Link to="/reservations">Reservations</Link>
+                </li>
+                <li className="">
+                    <Link to="/tariff">Tariff</Link>
+                </li>
+                    <li className="">
           <Link to="/garageoverview">Garage Overview</Link>
         </li>
+                <li className="router-space">
+                    <Link to="/" onClick={() => this.logOut()}>Log out</Link>
+                </li>
+            </>
+        )
+    }
 
         <li className="router-space">
           <Link to="/login">Log out</Link>
@@ -99,6 +110,7 @@ export default class NavBar extends Component<Props, State> {
     };
   }
 
+
   private loggedIn(user: any, accountService: AccountService): void {
     this.setDefaults(accountService);
     this.setState({
@@ -106,5 +118,11 @@ export default class NavBar extends Component<Props, State> {
     });
   }
 
+    private logOut(): void {
+        this.accountService.deleteCredential();
+        this.setState({
+            loggedIn: false
+        });
+    }
   private setDefaults(accountService: AccountService): void {}
 }
