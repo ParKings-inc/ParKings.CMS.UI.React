@@ -25,7 +25,8 @@ const MapCanvasComponent = (props) => {
 
   function drawParkingSpaces(canvas, ctx, spaceParam) {
     ctx.beginPath();
-    ctx.clearRect(0, 0, 1920, 1080);
+    ctx.fillStyle = "Grey";
+    ctx.fillRect(0, 0, 1920, 1080);
 
     let uniqueFloors = [];
     spaceParam.forEach((space) => {
@@ -113,7 +114,10 @@ const MapCanvasComponent = (props) => {
         id="excanvas"
         width={1920}
         height={1080}
-        style={{ width: "80%", height: "90%" }}
+        style={{
+          width: "80%",
+          height: "90%",
+        }}
         onMouseDown={(e) => {
           setHoldingState(true);
           setMouseDownPos({ x: e.clientX, y: e.clientY });
