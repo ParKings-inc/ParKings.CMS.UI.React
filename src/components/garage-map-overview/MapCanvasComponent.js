@@ -70,11 +70,11 @@ const MapCanvasComponent = (props) => {
     needSpaces.forEach((space) => {
       ctx.beginPath();
       ctx.save();
-      ctx.translate((1920 / 2) * mouseScroll, (1080 / 2) * mouseScroll);
+      ctx.translate(1920 / 2, 1080 / 2);
       ctx.scale(mouseScroll, mouseScroll);
       ctx.translate(
-        -((1920 * translationPos.x) / 2) * mouseScroll,
-        -((1080 * translationPos.y) / 2) * mouseScroll
+        -((1920 * translationPos.x) / 2),
+        -((1080 * translationPos.y) / 2)
       );
       ctx.strokeStyle = "Black";
       ctx.lineWidth = 10;
@@ -143,6 +143,22 @@ const MapCanvasComponent = (props) => {
             return mouseScroll > 1 || e.deltaY < 0
               ? mouseScroll - e.deltaY / window.innerHeight
               : 1;
+          });
+          setTranslationPos(() => {
+            return {
+              x:
+                translationPos.x > 1 / mouseScroll || e.movementX < 0
+                  ? translationPos.x < 1 * mouseScroll || e.movementX > 0
+                    ? translationPos.x - e.movementX / (mouseScroll * 2) / 300
+                    : 1 * mouseScroll
+                  : 1 / mouseScroll,
+              y:
+                translationPos.y > 1 / mouseScroll || e.movementY < 0
+                  ? translationPos.y < 1 * mouseScroll || e.movementY > 0
+                    ? translationPos.y - e.movementY / (mouseScroll * 2) / 300
+                    : 1 * mouseScroll
+                  : 1 / mouseScroll,
+            };
           });
         }}
       ></canvas>
