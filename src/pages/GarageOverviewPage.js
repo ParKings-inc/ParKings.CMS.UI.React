@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { Select, MenuItem } from "@mui/material";
+import { Select, MenuItem, Drawer, TextField } from "@mui/material";
 import MapCanvasComponent from "../components/garage-map-overview/MapCanvasComponent";
 import { getAllGarage } from "../services/GarageService";
+import { Button } from "@mui/material";
+import { Box } from "@mui/system";
 
 const GarageOverviewPage = () => {
   const [garageid, setGarageId] = useState("");
   const [garages, setGarages] = useState([]);
   const [Floors, setFloors] = useState(null);
   const [selectedFloor, setSelectedFloor] = useState(0);
+  const [spaceString, setSpaceString] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState(1);
+  const [rerenderCounter, setRerenderCounter] = useState(0);
 
   useEffect(() => {
     getAllGarage()
@@ -21,6 +26,10 @@ const GarageOverviewPage = () => {
     console.log(floors);
     setFloors(floors);
   }
+
+  useEffect(() => {
+    console.log(selectedStatus);
+  }, [selectedStatus]);
 
   return (
     <>
@@ -71,11 +80,32 @@ const GarageOverviewPage = () => {
                 : null
               : null}
           </Select>
+          <h2>Enable/Disable Spaces</h2>
+          <p>Space string</p>
+          <TextField
+            onChange={(e) => {
+              setSpaceString(e.target.value);
+            }}
+          ></TextField>
+          <Button
+            style={{ marginTop: "5%" }}
+            variant="contained"
+            onClick={(e) => {
+              setRerenderCounter((e) => {
+                return rerenderCounter + 1;
+              });
+            }}
+          >
+            {selectedStatus === 3 ? "Enable" : "Disable"}
+          </Button>
         </div>
         <MapCanvasComponent
           garageId={garageid}
           floorSetter={assingFloors}
           floorSelection={selectedFloor}
+          selectedSpot={spaceString}
+          selectedSpotStatus={setSelectedStatus}
+          rerenderCounter={rerenderCounter}
         />
       </div>
     </>

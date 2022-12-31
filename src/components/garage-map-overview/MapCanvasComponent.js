@@ -11,17 +11,19 @@ const MapCanvasComponent = (props) => {
   useEffect(() => {
     getAllSpacesByGarage(props.garageId).then((e) => {
       setSpaces(e);
+      console.log("rerender");
       let canvas = document.getElementById("excanvas");
       let ctx = canvas.getContext("2d");
       drawParkingSpaces(canvas, ctx, e);
     });
-  }, [props.garageId]);
+  }, [props.garageId, props.rerenderCounter]);
 
   useEffect(() => {
     let canvas = document.getElementById("excanvas");
     let ctx = canvas.getContext("2d");
+    console.log(props.selectedSpot);
     drawParkingSpaces(canvas, ctx, spaces);
-  }, [mouseScroll, translationPos, props.floorSelection]);
+  }, [mouseScroll, translationPos, props.floorSelection, props.selectedSpot]);
 
   function drawParkingSpaces(canvas, ctx, spaceParam) {
     ctx.beginPath();
@@ -84,15 +86,32 @@ const MapCanvasComponent = (props) => {
       let xScale = 1920 / longestRow;
       let yScale = 1080 / uniqueRows.length;
       ctx.rect(x, y, xScale, yScale);
-      ctx.fillStyle =
-        space.statusId == 1
-          ? "green"
-          : space.statusId == 2
-          ? "goldenrod"
-          : "red";
+      if (props.selectedSpot != space.row + "-" + space.spot) {
+        ctx.fillStyle =
+          space.statusId == 1
+            ? "green"
+            : space.statusId == 2
+            ? "goldenrod"
+            : "red";
+      } else {
+        console.log(space.statusId);
+        props.selectedSpotStatus(space.statusId);
+        ctx.fillStyle = "rebeccapurple";
+      }
+
       ctx.fill();
       ctx.stroke();
-      ctx.fillStyle = "white";
+      if (props.selectedSpot != space.row + "-" + space.spot) {
+        ctx.fillStyle = "white";
+      } else {
+        ctx.fillStyle =
+          space.statusId == 1
+            ? "green"
+            : space.statusId == 2
+            ? "goldenrod"
+            : "red";
+      }
+
       ctx.font = `${xScale / 8}px Arial`;
       ctx.fillText(
         `${space.row}-${space.spot}`,
