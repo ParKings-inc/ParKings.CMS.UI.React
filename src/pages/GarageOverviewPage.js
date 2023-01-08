@@ -4,6 +4,7 @@ import MapCanvasComponent from "../components/garage-map-overview/MapCanvasCompo
 import { getAllGarage } from "../services/GarageService";
 import { Button } from "@mui/material";
 import { Box } from "@mui/system";
+import { getAllSpaceStates, putSpace } from "../services/SpaceService";
 
 const GarageOverviewPage = () => {
   const [garageid, setGarageId] = useState("");
@@ -13,13 +14,21 @@ const GarageOverviewPage = () => {
   const [spaceString, setSpaceString] = useState("");
   const [selectedStatus, setSelectedStatus] = useState(1);
   const [rerenderCounter, setRerenderCounter] = useState(0);
+  const [spaceStates, setSpaceStates] = useState([]);
+  const [selectedSpace, setSelectedSpace] = useState(null);
 
   useEffect(() => {
     getAllGarage()
       .then((data) => {
         setGarages(data);
       })
-      .catch((error) => {});
+      .catch((error) => { });
+
+    getAllSpaceStates()
+      .then((data) => {
+        console.log(data);
+        setSpaceStates(data);
+      })
   }, []);
 
   function assingFloors(floors) {
@@ -49,12 +58,12 @@ const GarageOverviewPage = () => {
             {Array.isArray(garages)
               ? garages.length > 0
                 ? garages.map((garage) => {
-                    return (
-                      <MenuItem key={garage.id} value={garage.id}>
-                        {garage.name}
-                      </MenuItem>
-                    );
-                  })
+                  return (
+                    <MenuItem key={garage.id} value={garage.id}>
+                      {garage.name}
+                    </MenuItem>
+                  );
+                })
                 : null
               : null}
           </Select>
@@ -71,33 +80,54 @@ const GarageOverviewPage = () => {
             {Array.isArray(Floors)
               ? Floors.length > 0
                 ? Floors.map((floor) => {
-                    return (
-                      <MenuItem key={floor} value={floor}>
-                        {floor}
-                      </MenuItem>
-                    );
-                  })
+                  return (
+                    <MenuItem key={floor} value={floor}>
+                      {floor}
+                    </MenuItem>
+                  );
+                })
                 : null
               : null}
           </Select>
           <h2>Enable/Disable Spaces</h2>
           <p>Space string</p>
           <TextField
+            style={{ width: "100%", height: "10%" }}
             onChange={(e) => {
               setSpaceString(e.target.value);
             }}
           ></TextField>
-          <Button
-            style={{ marginTop: "5%" }}
-            variant="contained"
-            onClick={(e) => {
+          <br></br>
+          <br></br>
+          <Select
+            value={selectedStatus}
+            style={{ width: "100%", height: "10%" }}
+            onChange={(e) => {
+
+              let data = {
+                id: selectedSpace.id,
+                garageID: selectedSpace.garageID,
+                floor: selectedSpace.floor,
+                row: selectedSpace.row,
+                spot: selectedSpace.spot,
+                typeId: selectedSpace.typeId,
+                statusId: e.target.value,
+              }
+              console.log(selectedSpace);
+              putSpace(data)
+              setSelectedStatus(e.target.value);
               setRerenderCounter((e) => {
-                return rerenderCounter + 1;
-              });
-            }}
-          >
-            {selectedStatus === 3 ? "Enable" : "Disable"}
-          </Button>
+                return e + 1;
+              })
+            }}>
+            {spaceStates.map((state) => {
+              return (
+                <MenuItem key={state.id} value={state.id}>
+                  {state.name}
+                </MenuItem>
+              );
+            })}
+          </Select>
         </div>
         <MapCanvasComponent
           garageId={garageid}
@@ -106,6 +136,7 @@ const GarageOverviewPage = () => {
           selectedSpot={spaceString}
           selectedSpotStatus={setSelectedStatus}
           rerenderCounter={rerenderCounter}
+          spaceSetter={setSelectedSpace}
         />
       </div>
     </>

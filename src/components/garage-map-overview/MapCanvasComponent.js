@@ -23,9 +23,12 @@ const MapCanvasComponent = (props) => {
     let ctx = canvas.getContext("2d");
     console.log(props.selectedSpot);
     drawParkingSpaces(canvas, ctx, spaces);
+    if (!Array.isArray(spaces)) return;
+    props.spaceSetter(spaces.find((e) => e.floor === props.floorSelection && props.selectedSpot === e.row + "-" + e.spot));
   }, [mouseScroll, translationPos, props.floorSelection, props.selectedSpot]);
 
   function drawParkingSpaces(canvas, ctx, spaceParam) {
+    if (!Array.isArray(spaceParam)) return;
     ctx.beginPath();
     ctx.fillStyle = "Grey";
     ctx.fillRect(0, 0, 1920, 1080);
@@ -69,7 +72,7 @@ const MapCanvasComponent = (props) => {
       }
     });
 
-    for (let index = 0; index < uniqueRows.length; index++) {}
+    for (let index = 0; index < uniqueRows.length; index++) { }
     needSpaces.forEach((space) => {
       ctx.beginPath();
       ctx.save();
@@ -91,8 +94,8 @@ const MapCanvasComponent = (props) => {
           space.statusId == 1
             ? "green"
             : space.statusId == 2
-            ? "goldenrod"
-            : "red";
+              ? "goldenrod"
+              : "red";
       } else {
         console.log(space.statusId);
         props.selectedSpotStatus(space.statusId);
@@ -108,8 +111,8 @@ const MapCanvasComponent = (props) => {
           space.statusId == 1
             ? "green"
             : space.statusId == 2
-            ? "goldenrod"
-            : "red";
+              ? "goldenrod"
+              : "red";
       }
 
       ctx.font = `${xScale / 8}px Arial`;
