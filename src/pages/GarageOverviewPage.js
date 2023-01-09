@@ -22,13 +22,12 @@ const GarageOverviewPage = () => {
       .then((data) => {
         setGarages(data);
       })
-      .catch((error) => { });
+      .catch((error) => {});
 
-    getAllSpaceStates()
-      .then((data) => {
-        console.log(data);
-        setSpaceStates(data);
-      })
+    getAllSpaceStates().then((data) => {
+      console.log(data);
+      setSpaceStates(data);
+    });
   }, []);
 
   function assingFloors(floors) {
@@ -39,6 +38,24 @@ const GarageOverviewPage = () => {
   useEffect(() => {
     console.log(selectedStatus);
   }, [selectedStatus]);
+
+  async function PutStatus(e) {
+    let data = {
+      id: selectedSpace.id,
+      garageID: selectedSpace.garageID,
+      floor: selectedSpace.floor,
+      row: selectedSpace.row,
+      spot: selectedSpace.spot,
+      typeId: selectedSpace.typeId,
+      statusId: e.target.value,
+    };
+    console.log(selectedSpace);
+    await putSpace(data);
+    await setSelectedStatus(e.target.value);
+    await setRerenderCounter((e) => {
+      return e + 1;
+    });
+  }
 
   return (
     <>
@@ -58,12 +75,12 @@ const GarageOverviewPage = () => {
             {Array.isArray(garages)
               ? garages.length > 0
                 ? garages.map((garage) => {
-                  return (
-                    <MenuItem key={garage.id} value={garage.id}>
-                      {garage.name}
-                    </MenuItem>
-                  );
-                })
+                    return (
+                      <MenuItem key={garage.id} value={garage.id}>
+                        {garage.name}
+                      </MenuItem>
+                    );
+                  })
                 : null
               : null}
           </Select>
@@ -80,12 +97,12 @@ const GarageOverviewPage = () => {
             {Array.isArray(Floors)
               ? Floors.length > 0
                 ? Floors.map((floor) => {
-                  return (
-                    <MenuItem key={floor} value={floor}>
-                      {floor}
-                    </MenuItem>
-                  );
-                })
+                    return (
+                      <MenuItem key={floor} value={floor}>
+                        {floor}
+                      </MenuItem>
+                    );
+                  })
                 : null
               : null}
           </Select>
@@ -103,23 +120,9 @@ const GarageOverviewPage = () => {
             value={selectedStatus}
             style={{ width: "100%", height: "10%" }}
             onChange={(e) => {
-
-              let data = {
-                id: selectedSpace.id,
-                garageID: selectedSpace.garageID,
-                floor: selectedSpace.floor,
-                row: selectedSpace.row,
-                spot: selectedSpace.spot,
-                typeId: selectedSpace.typeId,
-                statusId: e.target.value,
-              }
-              console.log(selectedSpace);
-              putSpace(data)
-              setSelectedStatus(e.target.value);
-              setRerenderCounter((e) => {
-                return e + 1;
-              })
-            }}>
+              PutStatus(e);
+            }}
+          >
             {spaceStates.map((state) => {
               return (
                 <MenuItem key={state.id} value={state.id}>
