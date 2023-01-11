@@ -6,7 +6,7 @@
     "@aldabil/react-scheduler": "^2.5.10",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
-    "@microsoft/signalr": "^7.0.0",
+    "@microsoft/signalr": "^7.0.2",
     "@mui/icons-material": "^5.10.16",
     "@mui/material": "^5.10.15",
     "@mui/x-date-pickers": "^5.0.8",

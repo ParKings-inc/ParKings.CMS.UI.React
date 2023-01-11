@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getAllSpacesByGarage } from "../../services/SpaceService";
+import { HubConnectionBuilder } from "@microsoft/signalr";
 
 const MapCanvasComponent = (props) => {
   const [spaces, setSpaces] = useState([]);
@@ -26,6 +27,25 @@ const MapCanvasComponent = (props) => {
     if (!Array.isArray(spaces)) return;
     props.spaceSetter(spaces.find((e) => e.floor === props.floorSelection && props.selectedSpot === e.row + "-" + e.spot));
   }, [mouseScroll, translationPos, props.floorSelection, props.selectedSpot]);
+
+  useEffect(() => {
+    const connection = new HubConnectionBuilder()
+        .withUrl('https://localhost:7205/hubs/spaces')
+        .withAutomaticReconnect()
+        .build();
+
+    connection.start()
+        .then(result => {
+            console.log('Connected!');
+
+            connection.on('ReceiveSpaces', message => {      
+              console.log("Refresh")
+              
+            });
+        })
+        .catch(e => console.log('Connection failed: ', e));
+  }, []);
+
 
   function drawParkingSpaces(canvas, ctx, spaceParam) {
     if (!Array.isArray(spaceParam)) return;

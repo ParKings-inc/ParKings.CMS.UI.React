@@ -41,6 +41,7 @@ export default class ReservationComponent extends Component<Props> {
     private async accept(): Promise<void> {
         if (await ReservationsService.updateStatus(this.props.reservation.ReservationID
             , "Accepted")) {
+            this.SendWebSocketTrigger()
             this.props.reservation.Status = "Accepted";
             this.setState({});
         }
@@ -49,8 +50,21 @@ export default class ReservationComponent extends Component<Props> {
     private async deny(): Promise<void> {
         if (await ReservationsService.updateStatus(this.props.reservation.ReservationID
             , "Denied")) {
+            this.SendWebSocketTrigger()
             this.props.reservation.Status = "Denied";
             this.setState({});
+        }
+    }
+
+    private async SendWebSocketTrigger(): Promise<void> {
+        try {
+            console.log("trying to sent the Websocket trigger")
+            await fetch("https://localhost:7205/api/Reservations", {
+                method: 'Get'
+            });
+        }
+        catch(e) {
+            console.log('Sending message failed.', e)
         }
     }
 }
