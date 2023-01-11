@@ -24,7 +24,7 @@ export default class ReservationComponent extends Component<Props> {
                     </div>
                     <div className="reservation-status-container">
                         <ReservationStatusComponent status={this.props.reservation.Status} />
-                        {this.props.reservation.Status !== "Awaiting payment" ?
+                        {this.props.reservation.Status !== "Awaiting payment" && this.props.reservation.Status !== "Paid" ?
                             <div className="reservation-button-container">
                                 <Button variant="contained" color="success" onClick={async () => await this.accept()}>Accept</Button>
                                 <Button variant="contained" color="error" onClick={async () => await this.deny()}>Deny</Button>
@@ -63,7 +63,7 @@ export default class ReservationComponent extends Component<Props> {
                 method: 'Get'
             });
         }
-        catch(e) {
+        catch (e) {
             console.log('Sending message failed.', e)
         }
     }
