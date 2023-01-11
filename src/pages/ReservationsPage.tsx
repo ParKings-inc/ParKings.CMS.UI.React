@@ -3,6 +3,7 @@ import ReservationComponent from "../components/reservations/ReservationComponen
 import Reservation from "../reservations/Reservation";
 import ReservationsService from "../services/ReservationsService";
 import "../styles/pages/ReservationsPage.css";
+import { HubConnectionBuilder } from "@microsoft/signalr";
 
 interface State {
     reservations: ReactNode[] | null;
@@ -35,6 +36,23 @@ export default class ReservationsPage extends Component<any, State> {
 
     public async componentDidMount(): Promise<void> {
         await this.getReservations();
+
+        const connection = new HubConnectionBuilder()
+            .withUrl('https://localhost:7205/hubs/reservation')
+            .withAutomaticReconnect()
+            .build();
+
+        connection.start()
+            .then(result => {
+                console.log('Connected!');
+
+                connection.on('ReceiveReservation', message => {
+                    console.log(message)
+                    this.getReservations()
+                    console.log(this.state.reservations)
+                });
+            })
+            .catch(e => console.log('Connection failed: ', e));
     }
 
     private async getReservations(): Promise<void> {

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getAllSpacesByGarage } from "../../services/SpaceService";
+import { HubConnectionBuilder } from "@microsoft/signalr";
 
 const MapCanvasComponent = (props) => {
   const [spaces, setSpaces] = useState([]);
@@ -7,10 +8,13 @@ const MapCanvasComponent = (props) => {
   const [mouseScroll, setMouseScroll] = useState(1);
   const [mouseDownPos, setMouseDownPos] = useState({ x: 0, y: 0 });
   const [translationPos, setTranslationPos] = useState({ x: 1, y: 1 });
+  const [counter, setCounter] = useState(0);
+  const [pageLoad, setPageLoad] = useState(1);
 
   useEffect(() => {
     getAllSpacesByGarage(props.garageId).then((e) => {
       setSpaces(e);
+      console.log(e)
       console.log("rerender");
       let canvas = document.getElementById("excanvas");
       let ctx = canvas.getContext("2d");
@@ -25,7 +29,42 @@ const MapCanvasComponent = (props) => {
     drawParkingSpaces(canvas, ctx, spaces);
     if (!Array.isArray(spaces)) return;
     props.spaceSetter(spaces.find((e) => e.floor === props.floorSelection && props.selectedSpot === e.row + "-" + e.spot));
-  }, [mouseScroll, translationPos, props.floorSelection, props.selectedSpot]);
+  }, [mouseScroll, translationPos, props.floorSelection, props.selectedSpot, spaces]);
+
+  useEffect(() => {
+    const connection = new HubConnectionBuilder()
+      .withUrl('https://localhost:7205/hubs/spaces')
+      .withAutomaticReconnect()
+      .build();
+
+    connection.start()
+      .then(result => {
+        console.log('Connected!');
+
+        connection.on('ReceiveSpaces', message => {
+          console.log("Refresh")
+          let messageArray = [];
+          if (Array.isArray(message))
+            message.forEach(element => {
+              let data = {
+                floor: element.Floor,
+                garageID: element.GarageId,
+                id: element.Id,
+                row: element.Row,
+                spot: element.Spot,
+                statusId: element.StatusId,
+                typeId: element.TypeId,
+              }
+              messageArray.push(data);
+            });
+
+          setSpaces(messageArray);
+        });
+      })
+      .catch(e => console.log('Connection failed: ', e));
+
+  }, []);
+
 
   function drawParkingSpaces(canvas, ctx, spaceParam) {
     if (!Array.isArray(spaceParam)) return;

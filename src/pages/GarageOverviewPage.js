@@ -5,6 +5,7 @@ import { getAllGarage } from "../services/GarageService";
 import { Button } from "@mui/material";
 import { Box } from "@mui/system";
 import { getAllSpaceStates, putSpace } from "../services/SpaceService";
+import { HubConnectionBuilder } from "@microsoft/signalr";
 
 const GarageOverviewPage = () => {
   const [garageid, setGarageId] = useState("");
