@@ -18,9 +18,7 @@ export default class PricingService {
       console.log(error);
     }
   }
-
-
-
+  
   static async deleteTariff(id) {
     try {
       const url = new URL(
