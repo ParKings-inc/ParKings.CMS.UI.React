@@ -10,7 +10,9 @@ interface Props {
 }
 
 export default class ReservationComponent extends Component<Props> {
+
     public render(): ReactNode {
+        console.log(this.props.reservation)
         return (
             <div className="reservation-container">
                 <div className="reservation-child-container">
@@ -18,14 +20,18 @@ export default class ReservationComponent extends Component<Props> {
                         <div><h3> {this.props.reservation.GarageName}</h3></div>
                         <div><b>Space</b>: {this.props.reservation.SpaceFloor}-{this.props.reservation.SpaceID}-{this.props.reservation.SpaceRow}</div>
                         <div><b>Arrival</b>: {this.props.reservation.ArrivalTime.toString()}</div>
-                        <div><b>Departure</b>: {this.props.reservation.DepartureTime.toString()}</div>
+                        <div><b>Departure</b>: {this.props.reservation.DepartureTime != null ? this.props.reservation.DepartureTime.toString() : "now"}</div>
                     </div>
                     <div className="reservation-status-container">
                         <ReservationStatusComponent status={this.props.reservation.Status} />
-                        <div className="reservation-button-container">
-                            <Button variant="contained" color="success" onClick={async () => await this.accept()}>Accept</Button>
-                            <Button variant="contained" color="error" onClick={async () => await this.deny()}>Deny</Button>
-                        </div>
+                        {this.props.reservation.Status !== "Awaiting payment" ?
+                            <div className="reservation-button-container">
+                                <Button variant="contained" color="success" onClick={async () => await this.accept()}>Accept</Button>
+                                <Button variant="contained" color="error" onClick={async () => await this.deny()}>Deny</Button>
+                            </div> :
+                            null
+                        }
+
                     </div>
                 </div>
             </div>
